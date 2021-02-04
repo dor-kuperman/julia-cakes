@@ -1,9 +1,11 @@
 import { FETCH_CAKES, NEW_CAKE, REMOVE_CAKE, EDIT_CAKE } from './types'
+const proxyurl = "https://cors-anywhere.herokuapp.com/";
+const url = "https://example.com";
 
 const BASE_URL = (process.env.NODE_ENV !== 'development')
     ? '/cakes'
     : '//localhost:5050/cakes';
-
+console.log(BASE_URL);
 // C
 export const createCake = (cakeData) => dispatch => {
 
@@ -11,7 +13,8 @@ export const createCake = (cakeData) => dispatch => {
         method: 'POST',
         credentials: 'include',
         headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
         },
         body: JSON.stringify(cakeData),
     })
@@ -28,6 +31,7 @@ export const fetchCakes = () => dispatch => {
         .then(res => res.json())
         .then(cakes => dispatch({
             type: FETCH_CAKES,
+            'Access-Control-Allow-Origin': '*',
             payload: cakes
         }))
 }
@@ -43,6 +47,7 @@ export const editCake = (cakeData) => dispatch => {
     })
         .then(res => res.json())
         .then(cake => dispatch({
+            'Access-Control-Allow-Origin': '*',
             type: EDIT_CAKE,
             payload: cake
         }))
@@ -54,6 +59,7 @@ export const deleteCake = (cakeID) => dispatch => {
     fetch(BASE_URL + cakeID, {
         method: 'DELETE',
         headers: {
+            'Access-Control-Allow-Origin': '*',
             'content-type': 'application/json'
         },
     })
