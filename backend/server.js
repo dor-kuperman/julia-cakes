@@ -14,6 +14,16 @@ const port = process.env.PORT || 5050;
 app.use(express.json());
 app.use(bodyParser.json());
 
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.resolve(__dirname, 'public')));
+} else {
+    const corsOptions = {
+        origin: ['http://127.0.0.1:5050', 'http://localhost:5050', 'http://127.0.0.1:5050', 'http://localhost:5050', 'http://localhost:3000'],
+        credentials: true,
+        'Access-Control-Allow-Credentials': true
+    };
+    app.use(cors(corsOptions));
+}
 const uri = process.env.ATLAS_URI;
 mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true }
 );
@@ -34,26 +44,17 @@ app.listen(port, () => {
 
 // if (process.env.NODE_ENV === 'production') {
 //     // Exprees will serve up production assets
-//     // app.use(express.static('client/build'));
+//     app.use(express.static('client/build'));
 //     app.use(express.static('public'));
 
 //     // Express serve up index.html file if it doesn't recognize route
 //     const path = require('path');
 //     app.get('*', (req, res) => {
-//         res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-//     });
-// }
+    //         res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+    //     });
+    // }
+    
+    app.get('/**', (req, res) => {
+        res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    })
 
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.resolve(__dirname, 'public')));
-} else {
-    const corsOptions = {
-        origin: ['http://127.0.0.1:5000', 'http://localhost:5000', 'http://127.0.0.1:5050', 'http://localhost:5050'],
-        credentials: true
-    };
-    app.use(cors(corsOptions));
-}
-
-app.get('/**', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-})
